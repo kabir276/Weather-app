@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wether app</title>
+  <link rel="stylesheet" href="style.css" >
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="Enter name of your city" spellcheck="false">
+            <button id="search"><img src="iss.png" alt="search" width="50px" height="50px"></button>
+        </div>
+        <div class="weather">
+            <img src="cloudy2.png"class="weather_icon">
+            <div class="weatherType"><P><b>Clouds</b></P></div>
+            <h1 class="temp"></h1>
+            <h2 class="city"></h2>
+            <div class="details">
+                <div class="col">
+                    <img src="./images/humidity-cloud-logo-removebg-preview (2).png" class="hum" >
+                </div>
+
+                <div>
+                    <p class="humidity"></p>
+                    <p>Humidity</p>
+                </div>
+                <div class="col">
+                    <img src="./images/wind-cloud-thumbnail-removebg-preview (1).png" class="win">
+                </div>
+
+                <div>
+                    <p class="Wind"></p>
+                    <p>Wind speed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- printhello? -->
+    <script>
+        const api_key=`264aa91c4205a0202d0b2c0b268c78d1`;
+        const searchbox= document.querySelector('.search input');
+        const searchbtn= document.querySelector('.search button')
+        const weatherIcon=document.querySelector('.weather img');
+        navigator.geolocation.getCurrentPosition(async  position=>  {
+              const  latitude = position.coords.latitude;
+             const   longitude = position.coords.longitude;
+                
+        const response= await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}`+`&appid=${api_key}`);
+        const data= await response.json();
+      
+
+       document.querySelector('.city').innerHTML= data.name;
+       document.querySelector('.weatherType').innerHTML= data.weather[0].main;
+       
+        document.querySelector('.temp').innerHTML= data.main.temp+ `&deg;`+'c';
+        document.querySelector('.humidity').innerHTML= data.main.humidity;
+        document.querySelector('.Wind').innerHTML= data.wind.speed+"km/h";
+            console.log(data);
+    });
+    // position();
+         async function weather(city){
+        const response= await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=`+ city +`&appid=${api_key}`);
+        const data= await response.json();
+        console.log( data);
+        document.querySelector('.city').innerHTML= data.name;
+        document.querySelector('.temp').innerHTML= data.main.temp+ `&deg;`+'c';
+        document.querySelector('.humidity').innerHTML= data.main.humidity;
+        document.querySelector('.Wind').innerHTML= data.wind.speed+"km/h";
+            if(data.weather[0].main=="Clouds"){
+                weatherIcon.src="cloudy2.png";
+            }
+            else if(data.weather[0].main=="Clear"){
+                weatherIcon.src="./images/clear.png";
+            }
+            else if(data.weather[0].main=="Rain"){
+                weatherIcon.src="./images/rain.png";
+            }
+            else if(data.weather[0].main=="Drizzle"){
+                weatherIcon.src="./images/drizzle.png";
+            }
+            else if(data.weather[0].main=="Mist"){
+                weatherIcon.src="./images/Mist.png";
+            }
+        
+        }
+
+        searchbtn.addEventListener("click",()=>{
+        
+            weather(searchbox.value);
+
+
+        })
+        </script>
+</body>
+</html>
